@@ -94,11 +94,6 @@ export class CompressImageSettingTab extends PluginSettingTab {
                         desc: "When enabled, webp images are inserted as-is without re-compression (faster). Other formats still compress.",
                         control: { type: "toggle", key: "skipWebpCompression" },
                     },
-                    {
-                        name: "Skip webp compression",
-                        desc: "When enabled, webp images are inserted as-is without re-compression (faster). Other formats still compress.",
-                        control: { type: "toggle", key: "skipWebpCompression" },
-                    },
                 ],
             },
             {
