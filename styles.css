@@ -1,0 +1,42 @@
+.compress-progress-meter {
+    width: 100%;
+    height: 20px;
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--background-modifier-border);
+}
+
+.compress-progress-fill {
+    width: 0%;
+    height: 100%;
+    background-color: var(--interactive-accent);
+    transition: width 0.2s ease;
+}
+
+.compress-result-stats {
+    margin: 8px 0;
+}
+
+.compress-result-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 3px 0;
+}
+
+.compress-result-value {
+    font-weight: var(--font-semibold);
+    text-align: right;
+}
+
+.compress-result-errors {
+    margin-top: 8px;
+}
+
+.compress-result-errors ul {
+    max-height: 180px;
+    overflow-y: auto;
+    margin: 4px 0 0 0;
+    padding-left: 20px;
+}

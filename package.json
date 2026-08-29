@@ -1,0 +1,31 @@
+{
+  "name": "compress-image-webp",
+  "version": "1.0.0",
+  "description": "Compress images and convert to WebP automatically in Obsidian.",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit && node esbuild.config.mjs production",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "image",
+    "compress",
+    "webp"
+  ],
+  "author": "Bjorn Clauw",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^16.11.21",
+    "esbuild": "^0.28.1",
+    "eslint": "^9.39.5",
+    "eslint-plugin-obsidianmd": "^0.4.2",
+    "jiti": "^2.7.0",
+    "obsidian": "latest",
+    "tslib": "2.3.1",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.68.0"
+  }
+}

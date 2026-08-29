@@ -1,0 +1,8 @@
+/TEST-VAULT
+main.js
+/node_modules
+/.codegraph
+/.opencode
+/.claude
+data.json
+*.log
