@@ -14,14 +14,31 @@ export interface BatchResult {
     cancelled: boolean;
 }
 
-export function getBatchCandidates(plugin: Plugin, settings: PluginSettings): TFile[] {
+export interface BatchCandidates {
+    /** Images eligible for conversion (excluded folders already removed). */
+    files: TFile[];
+    /** Images in excluded folders; reported but left untouched. */
+    excludedCount: number;
+}
+
+export function getBatchCandidates(plugin: Plugin, settings: PluginSettings): BatchCandidates {
     // TIFF is excluded: Chromium's createImageBitmap cannot decode it, so
     // conversion would always fail.
-    return plugin.app.vault.getFiles().filter((file) => {
+    const files: TFile[] = [];
+    let excludedCount = 0;
+
+    for (const file of plugin.app.vault.getFiles()) {
         const ext = file.extension.toLowerCase();
-        return ["png", "jpg", "jpeg", "bmp", "gif"].includes(ext)
-            && !isPathInExcludedFolder(file.path, settings.excludedFolders);
-    });
+        if (!["png", "jpg", "jpeg", "bmp", "gif"].includes(ext)) continue;
+
+        if (isPathInExcludedFolder(file.path, settings.excludedFolders)) {
+            excludedCount++;
+        } else {
+            files.push(file);
+        }
+    }
+
+    return { files, excludedCount };
 }
 
 export function formatBytes(bytes: number): string {

@@ -83,10 +83,12 @@ export class ProgressModal extends Modal {
 
 export class BatchResultModal extends Modal {
     result: BatchResult;
+    excludedCount: number;
 
-    constructor(app: App, result: BatchResult) {
+    constructor(app: App, result: BatchResult, excludedCount = 0) {
         super(app);
         this.result = result;
+        this.excludedCount = excludedCount;
     }
 
     onOpen() {
@@ -120,6 +122,9 @@ export class BatchResultModal extends Modal {
                 addRow("Size change", `+${formatBytes(r.bytesAfter - r.bytesBefore)}`);
             }
             addRow("Duration", `${(r.durationMs / 1000).toFixed(1)} s`);
+        }
+        if (this.excludedCount > 0) {
+            addRow("Left in excluded folders", `${this.excludedCount}`);
         }
         if (r.cancelled) {
             addRow("Duration", `${(r.durationMs / 1000).toFixed(1)} s`);

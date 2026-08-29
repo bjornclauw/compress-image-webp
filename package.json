@@ -1,6 +1,6 @@
 {
   "name": "compress-image-webp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Compress images and convert to WebP automatically in Obsidian.",
   "main": "main.js",
   "scripts": {
@@ -23,7 +23,7 @@
     "eslint": "^9.39.5",
     "eslint-plugin-obsidianmd": "^0.4.2",
     "jiti": "^2.7.0",
-    "obsidian": "latest",
+    "obsidian": "^1.13.1",
     "tslib": "2.3.1",
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.68.0"

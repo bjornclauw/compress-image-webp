@@ -49,8 +49,8 @@ Converted files are named `originalname_YYYY_MM_DD_HH_mm_ss.webp` (timestamp opt
 
 | Setting | Default | Description |
 |---|---|---|
-| Max dimension | `1600` px | Longest edge of the compressed image; larger images are downscaled |
-| WebP quality | `0.75` | Encoder quality (0.1–1.0) |
+| Max dimension | `2000` px | Longest edge of the compressed image; larger images are downscaled |
+| WebP quality | `0.9` | Encoder quality (0.1–1.0) |
 | Skip small files | on | Batch conversion ignores files below the threshold |
 | Skip threshold | `200` KB | Size under which files are left alone |
 | Add timestamp | on | Append a human-readable timestamp to saved filenames |

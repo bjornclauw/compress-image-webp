@@ -1,7 +1,7 @@
 {
   "id": "compress-image-webp",
   "name": "Compress Image (WebP)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "0.15.0",
   "description": "Automatically compresses and converts images to WebP on paste, drop, and upload.",
   "author": "Bjorn Clauw",

@@ -14,13 +14,4 @@ export default [
             },
         },
     },
-    {
-        files: ["src/**/*.ts"],
-        rules: {
-            // The declarative settings API (getSettingDefinitions) requires
-            // Obsidian 1.13+; this plugin keeps the classic Setting API so it
-            // can run on older versions (minAppVersion 0.15.0).
-            "obsidianmd/settings-tab/prefer-setting-definitions": "off",
-        },
-    },
 ];

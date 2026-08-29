@@ -93,12 +93,16 @@ export default class CompressImagePlugin extends Plugin implements ICompressImag
 
     async runBatchConversion() {
         const candidates = getBatchCandidates(this, this.settings);
-        if (candidates.length === 0) {
-            new Notice("No legacy images found to convert.");
+        if (candidates.files.length === 0) {
+            new Notice(
+                candidates.excludedCount > 0
+                    ? `No convertible images found. ${candidates.excludedCount} images in excluded folders were left untouched.`
+                    : "No legacy images found to convert."
+            );
             return;
         }
 
-        new ConfirmModal(this.app, candidates.length, async () => {
+        new ConfirmModal(this.app, candidates.files.length, async () => {
             let aborted = false;
             const progressModal = new ProgressModal(this.app, () => {
                 aborted = true;
@@ -109,12 +113,12 @@ export default class CompressImagePlugin extends Plugin implements ICompressImag
                 const result = await processBatch(
                     this,
                     this.settings,
-                    candidates,
+                    candidates.files,
                     (completed, total) => progressModal.update(completed, total),
                     () => aborted
                 );
                 progressModal.close();
-                new BatchResultModal(this.app, result).open();
+                new BatchResultModal(this.app, result, candidates.excludedCount).open();
             } catch (err) {
                 console.error("Batch conversion failed", err);
                 new Notice("Error during batch conversion. Check console.");

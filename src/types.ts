@@ -13,8 +13,8 @@ export interface PluginSettings {
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
-    maxDimension: 1600,
-    quality: 0.75,
+    maxDimension: 2000,
+    quality: 0.9,
     skipSmallFiles: true,
     skipThresholdKB: 200,
     addTimestamp: true,
