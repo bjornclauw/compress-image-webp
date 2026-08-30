@@ -1,6 +1,6 @@
 {
   "name": "compress-image-webp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Compress images and convert to WebP automatically in Obsidian.",
   "main": "main.js",
   "scripts": {

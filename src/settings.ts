@@ -90,8 +90,8 @@ export class CompressImageSettingTab extends PluginSettingTab {
                         control: { type: "toggle", key: "enableMultipleUploads" },
                     },
                     {
-                        name: "Skip webp compression",
-                        desc: "When enabled, webp images are inserted as-is without re-compression (faster). Other formats still compress.",
+                        name: "Skip efficient formats",
+                        desc: "When enabled, webp, avif and heic/heif images are inserted as-is without re-compression (faster). Other formats still compress.",
                         control: { type: "toggle", key: "skipWebpCompression" },
                     },
                 ],
@@ -366,8 +366,8 @@ export class CompressImageSettingTab extends PluginSettingTab {
             );
 
         new Setting(containerEl)
-            .setName("Skip webp compression")
-            .setDesc("When enabled, webp images are inserted as-is without re-compression (faster). Other formats still compress.")
+            .setName("Skip efficient formats")
+            .setDesc("When enabled, webp, avif and heic/heif images are inserted as-is without re-compression (faster). Other formats still compress.")
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.skipWebpCompression)

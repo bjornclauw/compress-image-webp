@@ -44,7 +44,7 @@ BRAT → Add Beta plugin → https://github.com/bjornclauw/compress-image-webp
 | Pick multiple files | Ribbon icon *Add image(s) and compress* or command **Compress and add image(s)** |
 | Convert existing vault images | Command **Convert all images to webp** (confirm dialog, progress bar with cancel, detailed result report) |
 
-Converted files are named `originalname_YYYY_MM_DD_HH_mm_ss.webp` (timestamp optional via settings) and all internal links are updated when renaming during batch conversion.
+Live saves (paste, drop, File Explorer drop, multiple upload) are named `originalname_YYYY_MM_DD_HH_mm_ss.webp` when `Add timestamp` is on (`src/utils.ts:44`); batch conversion keeps the original basename (`image.png` → `image.webp`, `src/batch.ts:107`) to preserve link stability and updates all internal links via the file manager.
 
 ## Settings
 
@@ -52,15 +52,32 @@ Converted files are named `originalname_YYYY_MM_DD_HH_mm_ss.webp` (timestamp opt
 |---|---|---|
 | Max dimension | `2000` px | Longest edge of the compressed image; larger images are downscaled |
 | WebP quality | `0.9` | Encoder quality (0.1–1.0) |
-| Skip small files | on | Batch conversion ignores files below the threshold |
+| Skip small files | on | When on, files smaller than the threshold are preserved as-is (applies to paste, drop, File Explorer drop, multiple upload, and batch) |
 | Skip threshold | `200` KB | Size under which files are left alone |
 | Add timestamp | on | Append a human-readable timestamp to saved filenames |
 | Enable multiple uploads | on | Show the multi-upload ribbon icon and command |
-| Skip WebP compression | off | Insert pasted WebP files as-is without re-encoding |
+| Skip efficient formats | off | When on, `webp`, `avif` and `heic`/`heif` are inserted as-is without re-encoding (info: covers highly efficient formats; other formats still compress) |
 | Image display width | Default | Adds a display width to inserted image links (e.g. `![[image.webp\|500]]`); the file keeps its full resolution. Applies to paste, drop, and multi-upload |
 | Excluded folders | empty | List of vault-relative folders with autocomplete, add/delete/reorder; matching is case-insensitive, recursive, and also applies to paste/drop/upload destinations |
 
 On Obsidian 1.13.0+, all settings are searchable from Obsidian's settings search. Older versions get the classic settings panel.
+
+### Supported file types
+
+| Extension | MIME (typical) | Paste / Editor drop / File Explorer drop / Multiple upload | Batch `Convert all images to webp` | Notes |
+|---|---|---|---|---|
+| `png` | `image/png` | ✅ compresses to `webp` | ✅ converts to `webp` |  |
+| `jpg` / `jpeg` | `image/jpeg` | ✅ | ✅ |  |
+| `bmp` | `image/bmp` | ✅ | ✅ |  |
+| `gif` (static) | `image/gif` | ✅ → `webp` (single frame) | ✅ → `webp` |  |
+| `gif` (animated) | `image/gif` | ✅ preserved as `gif` (frame count >1) | ✅ skipped (preserved) | Never rasterized to static WebP |
+| `webp` | `image/webp` | ✅ (preserved when `Skip efficient formats` is on, otherwise re-encodes) | — never selected | Live honors `Skip efficient formats` (`webp`, `avif`, `heic`/`heif`); drag from Windows may arrive with empty `file.type` and is detected by extension |
+| `avif` | `image/avif` | ✅ (preserved when `Skip efficient formats` is on, otherwise → `webp`) | — never selected | Live best-effort (Explorer drag with empty `file.type` detected by extension); batch leaves modern formats untouched |
+| `heic` / `heif` | `image/heic` | ✅ (preserved when `Skip efficient formats` is on, otherwise → `webp` best-effort) | — never selected | iPhone photos dragged from Explorer; decode depends on OS/Chromium, batch skips to avoid failures |
+| `svg` | `image/svg+xml` | — never compressed | — never selected | Vector → rasterization never desirable; excluded in `src/utils.ts:23` |
+| `tiff`/`tif` | `image/tiff` | — not matched (no `image/*` + extension not listed) | — excluded | `src/batch.ts:25` — `createImageBitmap` cannot decode TIFF, conversion would always fail |
+
+Live detection (`src/utils.ts:22`) uses `file.type` + extension fallback (`png|jpe?g|bmp|gif|webp|avif|heic|heif`) so Windows Explorer drags with empty `file.type` still work. Batch (`src/batch.ts:32`) intentionally targets only legacy raster formats.
 
 ### Behavior details
 

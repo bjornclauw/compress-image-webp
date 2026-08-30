@@ -96,15 +96,21 @@ export function registerInterceptor(plugin: Plugin, settings: PluginSettings) {
 async function processGlobalDrop(plugin: Plugin, settings: PluginSettings, files: File[], target: HTMLElement) {
 	const notice = new Notice(`Processing ${files.length} images for File Explorer...`, 0);
 
-	// Determine destination folder from target
-	const navEl = target.closest(".nav-folder, .nav-file");
-	const targetPath = navEl?.getAttribute("data-path");
+	// Determine destination folder from target. Obsidian's file explorer nests
+	// titles and containers, so we look for the closest element carrying a
+	// data-path attribute inside the explorer. This correctly resolves drops
+	// onto folder titles, file rows, or the folder container itself.
+	const navEl = target.closest(".nav-folder, .nav-file") ?? target.closest("[data-path]");
+	const targetPath = navEl?.getAttribute("data-path") ?? target.closest("[data-path]")?.getAttribute("data-path");
 	let targetFolder: TFolder | null = null;
 
 	if (targetPath) {
 		const abstractFile = plugin.app.vault.getAbstractFileByPath(targetPath);
 		if (abstractFile instanceof TFile) {
-			targetFolder = abstractFile.parent;
+			// TFile.parent is null for files at vault root in some edge cases;
+			// fall back to the vault root to avoid passing null into
+			// getAvailablePathForAttachments (which would call null.getParentPrefix()).
+			targetFolder = abstractFile.parent ?? plugin.app.vault.getRoot();
 		} else if (abstractFile instanceof TFolder) {
 			// It's a folder
 			targetFolder = abstractFile;
