@@ -1,16 +1,40 @@
-import { Plugin, Notice, Editor, MarkdownView, MarkdownFileInfo } from "obsidian";
+import { Plugin, Notice, Editor, MarkdownView, MarkdownFileInfo, TFile, TFolder } from "obsidian";
 import { CompressImageSettingTab } from "./settings";
-import { PluginSettings, DEFAULT_SETTINGS, ICompressImagePlugin } from "./types";
+import {
+    PluginSettings,
+    DEFAULT_SETTINGS,
+    ICompressImagePlugin,
+    CompressImageApi,
+    COMPRESS_IMAGE_API_VERSION,
+} from "./types";
 import { registerInterceptor } from "./interceptor";
 import { getBatchCandidates, processBatch } from "./batch";
 import { ConfirmModal, ProgressModal, BatchResultModal } from "./modals";
-import { processAndInsertImages, isImageFile } from "./utils";
+import { processAndInsertImages, isImageFile, saveImageFile } from "./utils";
 
 export default class CompressImagePlugin extends Plugin implements ICompressImagePlugin {
     settings!: PluginSettings;
+    /** Public API for other plugins: app.plugins.plugins['compress-image-webp'].api */
+    api!: CompressImageApi;
 
     async onload() {
         await this.loadSettings();
+
+        // Expose the public API for other plugins (e.g. TODOseq task photos).
+        this.api = {
+            version: COMPRESS_IMAGE_API_VERSION,
+            isImageFile,
+            saveImage: async (file: File, source?: TFile | TFolder) => {
+                const src = source ?? this.app.vault.getRoot();
+                const saved = await saveImageFile(this, this.settings, file, src);
+                const sourcePath = src instanceof TFile ? src.path : "";
+                let link = this.app.fileManager.generateMarkdownLink(saved, sourcePath);
+                if (!link.startsWith("!")) {
+                    link = `!${link}`;
+                }
+                return { file: saved, link };
+            },
+        };
 
         // Register settings tab
         this.addSettingTab(new CompressImageSettingTab(this.app, this));
